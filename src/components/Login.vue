@@ -57,13 +57,9 @@
             <v-card-actions class="v-card-actions">
                 <v-btn elevation="0"
                        v-on:click="login"
-                       v-bind="attrs"
-                       v-on="on"
                 >Login</v-btn>
                 <v-btn elevation="0"
                        v-on:click="register"
-                       v-bind="attrs"
-                       v-on="on"
                 >
                     Register
                 </v-btn>
@@ -73,11 +69,17 @@
 </template>
 
 <script>
+
     export default {
         name: 'Login',
 
         data: () => ({
             visible: false,
+            valid: false,
+            username: '',
+            password: '',
+            firstname: '',
+            lastname: '',
         }),
 
         methods: {
@@ -87,8 +89,6 @@
 
             login() {
                 this.visible = false;
-
-
             },
 
             displayEmoji(unicode) {
