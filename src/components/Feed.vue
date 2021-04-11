@@ -8,6 +8,8 @@
                 Username's Feed
             </v-toolbar-title>
             <v-spacer></v-spacer>
+
+            <!-- DIALOG DIALOG DIALOG -->
             <v-dialog
                     class="v-dialog"
                     max-width="600"
@@ -28,7 +30,6 @@
                                 dark
                         >Share your mood!
                         </v-toolbar>
-                        <!-- Inputs -->
                         <v-textarea
                                 class="v-textarea"
                                 counter
@@ -59,9 +60,27 @@
             </v-icon>
         </v-toolbar>
 
-        <v-card :key="post.value"
+        <!-- FRIENDS FRIENDS FRIENDS -->
+        <div>
+            <v-card
+                    class="v-friends-card">
+                <v-avatar
+                        :key="user.firstname"
+                        class="v-avatar"
+                        size="25"
+                        v-for="user in userList">
+                    <v-icon
+                            dark>
+                        mdi-account-circle
+                    </v-icon>
+                </v-avatar>
+            </v-card>
+        </div>
+
+        <v-card
                 class="v-card"
                 elevation="10"
+                :key="post.value"
                 v-for="post in tempPosts">
             <v-card-title
                     class="v-card-title">
@@ -99,14 +118,14 @@
                         counter
                         maxlength="20"
                         v-if="showCommentLine"></v-text-field>
-                <v-icon @click="showEmojiDialog"
-                        type="button">mdi-emoticon-happy-outline
-                </v-icon>
                 <VEmojiPicker :pack="emojisNative"
                               @select="selectEmoji"
                               class="emojipicker"
                               labelSearch="Search"
                               v-show="emojiDialog"/>
+                <v-icon @click="showEmojiDialog"
+                        type="button">mdi-emoticon-happy-outline
+                </v-icon>
                 <span class="span"></span>
                 <div
                         class="comment-invoker">
@@ -122,6 +141,7 @@
 <script>
     import {VEmojiPicker} from 'v-emoji-picker';
     import packEmoji from 'vue-emoji-picker/src/emojis';
+    import UserService from "../services/UserService";
 
     export default {
         name: "Feed",
@@ -140,29 +160,39 @@
             tempPosts: [],
             postInput: '',
             tempPostInput: '',
+            userList: [],
         }),
 
         mounted() {
+            this.getAllUsers();
         },
-
         methods: {
             showEmojiDialog() {
                 this.emojiDialog = !this.emojiDialog;
             },
             selectEmoji(emoji) {
-                this.input = emoji;
-                this.reactions += emoji.data;
+                this.reactions.push(emoji.data);
             },
             omitEmoji() {
-                this.omitReactions = this.reactions.slice(0, 10)
-                return this.omitReactions
+                this.omitReactions = this.reactions.slice(0, 10);
             },
             initComment() {
-                this.showCommentLine = true;
+                this.showCommentLine = !this.showCommentLine;
 
             },
             submitPost() {
                 this.tempPosts.push(this.postInput);
+            },
+            getAllUsers() {
+                UserService.getAllUsers()
+                    .then(response => {
+                        for (let user of response.data) {
+                            this.userList.push(user)
+                        }
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    });
             }
         },
         computed: {
@@ -216,8 +246,9 @@
     }
 
     .emojipicker {
-        height: 100px;
-        width: 700px !important;
+        height: 90px;
+        width: 600px !important;
+        margin-right: 25px;
     }
 
     .v-text-field {
@@ -233,5 +264,16 @@
         max-width: 90%;
         margin-right: auto !important;
         margin-left: auto !important;
+    }
+
+    .v-friends-card {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: 35px;
+    }
+
+    .v-avatar {
+        margin-right: 5px;
+        background-color: lightpink;
     }
 </style>

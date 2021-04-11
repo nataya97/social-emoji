@@ -2,7 +2,8 @@
     <v-container>
         <v-card class="login" elevation="10">
             <v-card-title class="v-card-title">
-                Welcome to Emojimedia <div class="emoji">{{displayEmoji('heart_eyes')}}</div>
+                Welcome to Emojimedia
+                <div class="emoji">{{displayEmoji('heart_eyes')}}</div>
             </v-card-title>
             <v-form v-model="valid">
                 <v-container>
@@ -57,7 +58,8 @@
             <v-card-actions class="v-card-actions">
                 <v-btn elevation="0"
                        v-on:click="login"
-                >Login</v-btn>
+                >Login
+                </v-btn>
                 <v-btn elevation="0"
                        v-on:click="register"
                 >
@@ -69,6 +71,8 @@
 </template>
 
 <script>
+    import SockJS from "sockjs-client";
+    import Stopm from "webstomp-client";
 
     export default {
         name: 'Login',
@@ -80,17 +84,47 @@
             password: '',
             firstname: '',
             lastname: '',
+            received_messages: [],
+            send_message: null,
+            connected: false
         }),
-
+        mounted() {
+            this.connectRabbitMQ();
+        },
         methods: {
+            connectRabbitMQ() {
+                this.socket = new SockJS("http://localhost:8082/gs-guide-websocket");
+                this.stompClient = Stopm.over(this.socket);
+                this.stompClient.connect({},
+                    frame => {
+                        this.connected = true;
+                        console.log(frame);
+                        this.stompClient.subscribe("/topic/login", tick => {
+                            this.received_messages.push(JSON.parse(tick.body).content);
+                        });
+                        console.log(this.received_messages);
+                    },
+                    error => {
+                        console.log(error);
+                        this.connected = false;
+                    }
+                )
+            },
+            sendMessage() {
+                console.log("Send message: " + "Username");
+                if (this.stompClient && this.stompClient.connected) {
+                    const msg = {name: this.send_message};
+                    console.log(JSON.stringify(msg));
+                    this.stompClient.send("/app/login", JSON.stringify("username"), {});
+                }
+            },
             register() {
                 this.visible = true;
             },
-
             login() {
                 this.visible = false;
+                this.sendMessage();
             },
-
             displayEmoji(unicode) {
                 const emoji = require("emoji-dictionary");
                 return emoji.getUnicode(unicode)
