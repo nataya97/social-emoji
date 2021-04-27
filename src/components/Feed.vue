@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-container class="body">
         <Toolbar></Toolbar>
 
         <!-- FRIENDS FRIENDS FRIENDS -->
@@ -77,7 +77,7 @@
                 </div>
             </v-card-actions>
         </v-card>
-    </div>
+    </v-container>
 </template>
 
 <script>
@@ -121,14 +121,14 @@
             },
             getAllUsers() {
                 UserService.getAllUsers()
-                /*.then(response => {
-                    for (let user of response.data) {
-                        this.userList.push(user)
-                    }
-                })
-                .catch(e => {
-                    console.log(e)
-                });*/
+                    .then(response => {
+                        for (let user of response.data) {
+                            this.userList.push(user)
+                        }
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    });
             }
         },
         computed: {

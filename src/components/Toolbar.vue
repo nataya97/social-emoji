@@ -4,7 +4,7 @@
             dark>
         <v-toolbar-title
                 class="v-toolbar-title">
-            Username's Feed
+            {{this.toolbarTitle}}
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-icon
@@ -73,11 +73,20 @@
         data: () => ({
             posts: [],
             postInput: '',
+            toolbarTitle: '',
         }),
         mounted() {
+            this.changeToolbarTitle();
         },
 
         methods: {
+            changeToolbarTitle() {
+                if (router.currentRoute.path === '/discovery') {
+                    this.toolbarTitle = 'Discovery Page';
+                } else {
+                    this.toolbarTitle = 'Username Feed';
+                }
+            },
             submitPost() {
                 this.posts.push(this.postInput);
                 this.$root.posts = this.posts;
