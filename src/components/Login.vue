@@ -89,11 +89,11 @@
             connected: false
         }),
         mounted() {
-            this.connectRabbitMQ();
+            this.connectWebSocket();
         },
         methods: {
-            connectRabbitMQ() {
-                this.socket = new SockJS("http://localhost:8082/gs-guide-websocket");
+            connectWebSocket() {
+                this.socket = new SockJS("http://localhost:8082/websocket");
                 this.stompClient = Stopm.over(this.socket);
                 this.stompClient.connect({},
                     frame => {
@@ -111,11 +111,11 @@
                 )
             },
             sendMessage() {
-                console.log("Send message: " + "Username");
+                console.log("Send message:...");
                 if (this.stompClient && this.stompClient.connected) {
-                    const msg = {name: this.send_message};
+                    const msg = {username: 'fistname', pwd: 'password'};
                     console.log(JSON.stringify(msg));
-                    this.stompClient.send("/app/login", JSON.stringify("username"), {});
+                    this.stompClient.send("/app/login", JSON.stringify(msg), {});
                 }
             },
             register() {

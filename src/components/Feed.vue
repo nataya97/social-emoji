@@ -1,64 +1,6 @@
 <template>
-    <v-container>
-        <v-toolbar
-                class="v-toolbar"
-                dark>
-            <v-toolbar-title
-                    class="v-toolbar-title">
-                Username's Feed
-            </v-toolbar-title>
-            <v-spacer></v-spacer>
-
-            <!-- DIALOG DIALOG DIALOG -->
-            <v-dialog
-                    class="v-dialog"
-                    max-width="600"
-                    persistent
-                    transition="dialog-top-transition">
-                <template v-slot:activator="{on, attrs}">
-                    <v-icon
-                            class="v-icon"
-                            v-bind="attrs"
-                            v-on="on">
-                        mdi-plus
-                    </v-icon>
-                </template>
-                <template v-slot:default="dialog">
-                    <v-card>
-                        <v-toolbar
-                                class="v-toolbar"
-                                dark
-                        >Share your mood!
-                        </v-toolbar>
-                        <v-textarea
-                                class="v-textarea"
-                                counter
-                                label="Post something interesting"
-                                outlined
-                                type="text"
-                                v-model="postInput">
-                        </v-textarea>
-                        <v-card-actions
-                                class="justify-end">
-                            <v-btn
-                                    @click="dialog.value=false"
-                                    text>
-                                Close
-                            </v-btn>
-                            <v-btn
-                                    @click="submitPost()"
-                                    text>
-                                Submit
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </template>
-            </v-dialog>
-            <v-icon
-                    append-icon=mdi-checkbox-multiple-blank-circle class="v-icon">
-                mdi-bell-outline
-            </v-icon>
-        </v-toolbar>
+    <div>
+        <Toolbar></Toolbar>
 
         <!-- FRIENDS FRIENDS FRIENDS -->
         <div>
@@ -81,7 +23,7 @@
                 class="v-card"
                 elevation="10"
                 :key="post.value"
-                v-for="post in tempPosts">
+                v-for="post in this.$root.posts">
             <v-card-title
                     class="v-card-title">
                 Username
@@ -135,31 +77,28 @@
                 </div>
             </v-card-actions>
         </v-card>
-    </v-container>
+    </div>
 </template>
 
 <script>
     import {VEmojiPicker} from 'v-emoji-picker';
     import packEmoji from 'vue-emoji-picker/src/emojis';
     import UserService from "../services/UserService";
+    import Toolbar from "./Toolbar";
 
     export default {
         name: "Feed",
         components: {
+            Toolbar,
             VEmojiPicker
         },
 
         data: () => ({
-            input: '',
             emojiDialog: false,
             reactions: [],
             omitReactions: [],
-            posts: [],
             comment: '',
             showCommentLine: false,
-            tempPosts: [],
-            postInput: '',
-            tempPostInput: '',
             userList: [],
         }),
 
@@ -180,19 +119,16 @@
                 this.showCommentLine = !this.showCommentLine;
 
             },
-            submitPost() {
-                this.tempPosts.push(this.postInput);
-            },
             getAllUsers() {
                 UserService.getAllUsers()
-                    .then(response => {
-                        for (let user of response.data) {
-                            this.userList.push(user)
-                        }
-                    })
-                    .catch(e => {
-                        console.log(e)
-                    });
+                /*.then(response => {
+                    for (let user of response.data) {
+                        this.userList.push(user)
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                });*/
             }
         },
         computed: {
@@ -204,15 +140,6 @@
 </script>
 
 <style lang="scss" scoped>
-
-    .v-toolbar {
-        margin-bottom: 35px;
-        text-align: center;
-    }
-
-    .v-toolbar-title {
-        text-align: center;
-    }
 
     .v-card-subtitle {
         text-align: left;
@@ -260,20 +187,17 @@
         margin-left: 5px;
     }
 
-    .v-textarea {
-        max-width: 90%;
-        margin-right: auto !important;
-        margin-left: auto !important;
-    }
-
     .v-friends-card {
         padding-top: 5px;
         padding-bottom: 5px;
-        height: 35px;
+        height: 53px;
+        overflow-x: scroll;
+        overflow-y: hidden;
+        white-space: nowrap;
     }
 
     .v-avatar {
         margin-right: 5px;
-        background-color: lightpink;
+        background-color: lightsteelblue;
     }
 </style>

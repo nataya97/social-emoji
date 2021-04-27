@@ -1,11 +1,28 @@
-//import api from "../api";
+import postApi from "../apis/postApi";
 
 class PostService {
 
-    getPostByUserId() {
-
+    createPost(post) {
+        return postApi.post('/posts', {
+            post
+        });
     }
 
+    getAllPosts() {
+        return postApi.get('/posts');
+    }
+
+    getUserPosts(id) {
+        return postApi.get(`/posts/user=${id}`);
+    }
+
+    countUserPosts(id) {
+        return postApi.get(`/posts/user/${id}`);
+    }
+
+    deletePost(id) {
+        return postApi.get(`/posts=${id}`);
+    }
 }
 
 export default new PostService();
