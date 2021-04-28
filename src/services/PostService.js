@@ -3,9 +3,8 @@ import postApi from "../apis/postApi";
 class PostService {
 
     createPost(post) {
-        return postApi.post('/posts', {
-            post
-        });
+        return postApi.post('/posts', post
+        );
     }
 
     getAllPosts() {

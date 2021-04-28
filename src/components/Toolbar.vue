@@ -1,79 +1,41 @@
 <template>
     <v-toolbar
-            class="v-toolbar"
-            dark>
+            class="v-toolbar">
         <v-toolbar-title
                 class="v-toolbar-title">
             {{this.toolbarTitle}}
         </v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-icon
-                class="v-icon"
-                v-on:click="toDiscovery()">mdi-compass-outline
-        </v-icon>
+        <div
+                class="v-toolbar-icons">
+            <v-icon
+                    class="v-icon"
+                    v-on:click="changeRoute()">{{this.icon}}
+            </v-icon>
 
-        <!-- DIALOG DIALOG DIALOG -->
-        <v-dialog
-                class="v-dialog"
-                max-width="600"
-                persistent
-                transition="dialog-top-transition">
-            <template v-slot:activator="{on, attrs}">
-                <v-icon
-                        class="v-icon"
-                        v-bind="attrs"
-                        v-on="on">
-                    mdi-plus
-                </v-icon>
-            </template>
-            <template v-slot:default="dialog">
-                <v-card>
-                    <v-toolbar
-                            class="v-toolbar"
-                            dark
-                    >Share your mood!
-                    </v-toolbar>
-                    <v-textarea
-                            class="v-textarea"
-                            counter
-                            label="Post something interesting"
-                            outlined
-                            type="text"
-                            v-model="postInput">
-                    </v-textarea>
-                    <v-card-actions
-                            class="justify-end">
-                        <v-btn
-                                @click="dialog.value=false"
-                                text>
-                            Close
-                        </v-btn>
-                        <v-btn
-                                @click="submitPost()"
-                                text>
-                            Submit
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </template>
-        </v-dialog>
-        <v-icon
-                append-icon=mdi-checkbox-multiple-blank-circle class="v-icon">
-            mdi-bell-outline
-        </v-icon>
+            <!-- DIALOG DIALOG DIALOG -->
+            <Dialog
+                    class="v-icon"></Dialog>
+            <v-icon
+                    append-icon=mdi-checkbox-multiple-blank-circle
+                    class="v-icon">
+                mdi-bell-outline
+            </v-icon>
+        </div>
+
     </v-toolbar>
 </template>
 
 <script>
     import router from '../router'
+    import Dialog from "./Dialog";
 
     export default {
         name: "Toolbar",
-
+        components: {Dialog},
         data: () => ({
-            posts: [],
-            postInput: '',
             toolbarTitle: '',
+            icon: ''
         }),
         mounted() {
             this.changeToolbarTitle();
@@ -83,16 +45,18 @@
             changeToolbarTitle() {
                 if (router.currentRoute.path === '/discovery') {
                     this.toolbarTitle = 'Discovery Page';
+                    this.icon = 'mdi-home-circle-outline';
                 } else {
                     this.toolbarTitle = 'Username Feed';
+                    this.icon = 'mdi-compass-outline';
                 }
             },
-            submitPost() {
-                this.posts.push(this.postInput);
-                this.$root.posts = this.posts;
-            },
-            toDiscovery() {
-                router.push({name: 'Discovery'});
+            changeRoute() {
+                if (router.currentRoute.path === '/discovery') {
+                    router.push({name: 'Feed'});
+                } else {
+                    router.push({name: 'Discovery'});
+                }
             }
         }
     }
@@ -105,20 +69,22 @@
     .v-toolbar {
         margin-bottom: 35px;
         text-align: center;
+        background-color: rgb(78, 73, 75) !important;
     }
 
     .v-toolbar-title {
         text-align: center;
+        color: #BCA5AF;
+        letter-spacing: 3px;
     }
 
-    .v-textarea {
-        max-width: 90%;
-        margin-right: auto !important;
-        margin-left: auto !important;
+    .v-toolbar-icons {
+        display: flex;
     }
 
-    .v-icon {
-        margin-right: 15px;
-        margin-left: 15px;
+    .v-icon.v-icon {
+        margin-right: 5px;
+        margin-left: 5px;
+        color: #BCA5AF;
     }
 </style>

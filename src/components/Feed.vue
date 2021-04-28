@@ -58,7 +58,7 @@
                 <v-text-field
                         append-icon="mdi-send" class="v-text-field"
                         counter
-                        maxlength="20"
+                        maxlength="200"
                         v-if="showCommentLine"></v-text-field>
                 <VEmojiPicker :pack="emojisNative"
                               @select="selectEmoji"

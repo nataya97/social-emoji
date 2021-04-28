@@ -16,7 +16,26 @@
                         class="v-card-subtitle">
                     {{post.submitted}}
                 </v-card-subtitle>
-                {{post.content}}
+                <v-card-text
+                        class="v-card-text">
+                    {{post.content}}
+                </v-card-text>
+                <v-card-actions
+                        class="v-card-actions">
+                    <div class="icons">
+                        <v-spacer></v-spacer>
+                        <v-icon
+                                class="v-icon"
+                                type="button">
+                            mdi-emoticon-happy-outline
+                        </v-icon>
+                        <v-icon
+                                class="v-icon"
+                                type="button">
+                            mdi-comment-text-multiple-outline
+                        </v-icon>
+                    </div>
+                </v-card-actions>
             </v-card>
         </div>
     </v-container>
@@ -63,9 +82,32 @@
 
     .v-card {
         margin: 15px 15px 15px 15px;
-        height: 200px;
-        flex-basis: 33%;
+        height: 250px;
+        flex-basis: 25%;
         flex-grow: 1;
         flex-shrink: 1;
+    }
+
+    .v-card-text {
+        height: 120px;
+        /*overflow: auto;*/
+        text-align: justify;
+    }
+
+    .icons {
+        flex-basis: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: -70px;
+        background: linear-gradient(280deg, rgba(78, 73, 75, 1) 20%, rgba(209, 209, 209, 0.3930614482120973) 100%);
+    }
+
+    .v-icon.v-icon {
+        margin-right: 25px;
+        color: #BCA5AF;
+    }
+
+    .v-card-actions {
     }
 </style>
