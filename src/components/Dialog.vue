@@ -69,7 +69,13 @@
                 this.$root.posts = this.posts;
                 this.postBody = JSON.stringify({content: this.postInput});
                 console.log(this.postBody)
-                PostService.createPost(this.postBody);
+                PostService.createPost(this.postBody)
+                    .then(respponse => {
+                        console.log(respponse)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    });
             },
         }
     }

@@ -2,8 +2,8 @@ import postApi from "../apis/postApi";
 
 class CommentService {
 
-    createComment(comment) {
-        return postApi.post('/comments', comment);
+    createComment(id, comment) {
+        return postApi.post(`/comments/${id}`, comment);
     }
 
     getComments(id) {

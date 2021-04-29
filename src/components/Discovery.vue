@@ -29,11 +29,8 @@
                                 type="button">
                             mdi-emoticon-happy-outline
                         </v-icon>
-                        <v-icon
-                                class="v-icon"
-                                type="button">
-                            mdi-comment-text-multiple-outline
-                        </v-icon>
+                        <CommentDialog
+                                class="v-icon"></CommentDialog>
                     </div>
                 </v-card-actions>
             </v-card>
@@ -44,10 +41,11 @@
 <script>
     import Toolbar from "./Toolbar";
     import PostService from "../services/PostService";
+    import CommentDialog from "./CommentDialog";
 
     export default {
         name: "Discovery",
-        components: {Toolbar},
+        components: {CommentDialog, Toolbar},
 
         data: () => ({
             postList: []
