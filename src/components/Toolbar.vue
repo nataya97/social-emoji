@@ -87,4 +87,5 @@
         margin-left: 5px;
         color: #BCA5AF;
     }
+
 </style>

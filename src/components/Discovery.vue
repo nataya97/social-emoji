@@ -24,13 +24,13 @@
                         class="v-card-actions">
                     <div class="icons">
                         <v-spacer></v-spacer>
-                        <v-icon
-                                class="v-icon"
-                                type="button">
-                            mdi-emoticon-happy-outline
-                        </v-icon>
+                        <Emoji
+                                class="v-icon"></Emoji>
                         <CommentDialog
-                                class="v-icon"></CommentDialog>
+                                :postId="post.id"
+                                :userId="post.user"
+                                class="v-icon"
+                        ></CommentDialog>
                     </div>
                 </v-card-actions>
             </v-card>
@@ -42,13 +42,14 @@
     import Toolbar from "./Toolbar";
     import PostService from "../services/PostService";
     import CommentDialog from "./CommentDialog";
+    import Emoji from "./Emoji";
 
     export default {
         name: "Discovery",
-        components: {CommentDialog, Toolbar},
+        components: {Emoji, CommentDialog, Toolbar},
 
         data: () => ({
-            postList: []
+            postList: [],
         }),
 
         mounted() {
@@ -66,12 +67,12 @@
                     .catch(e => {
                         console.log(e);
                     });
-            }
+            },
         }
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
     .v-card-rows {
         display: flex;

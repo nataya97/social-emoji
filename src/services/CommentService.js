@@ -10,6 +10,10 @@ class CommentService {
         return postApi.get(`/comments/user=${id}`);
     }
 
+    getCommentsByPost(id) {
+        return postApi.get(`/comments?postId=${id}`);
+    }
+
     countComments(id) {
         return postApi.get(`/comments/user/${id}`);
     }
