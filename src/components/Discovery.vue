@@ -10,7 +10,7 @@
                     v-for="post in postList">
                 <v-card-title
                         class="v-card-title">
-                    {{post.user}}
+                    {{post.username}}
                 </v-card-title>
                 <v-card-subtitle
                         class="v-card-subtitle">
@@ -25,6 +25,8 @@
                     <div class="icons">
                         <v-spacer></v-spacer>
                         <Emoji
+                                :postId="post.id"
+                                :userId="post.user"
                                 class="v-icon"></Emoji>
                         <CommentDialog
                                 :postId="post.id"
@@ -43,13 +45,14 @@
     import PostService from "../services/PostService";
     import CommentDialog from "./CommentDialog";
     import Emoji from "./Emoji";
+    import UserService from "../services/UserService";
 
     export default {
         name: "Discovery",
         components: {Emoji, CommentDialog, Toolbar},
 
         data: () => ({
-            postList: [],
+            postList: []
         }),
 
         mounted() {
@@ -59,15 +62,26 @@
         methods: {
             getAllPosts() {
                 PostService.getAllPosts()
-                    .then(response => {
+                    .then((response) => {
                         for (let post of response.data) {
-                            this.postList.push(post);
+                            this.getUserPerPost(post, post.user);
                         }
                     })
                     .catch(e => {
                         console.log(e);
                     });
             },
+            getUserPerPost(post, id) {
+                UserService.getUserById(id)
+                    .then((response) => {
+                        post.username = response.data;
+                        this.postList.push(post);
+                        return (response.data);
+                    })
+                    .catch(e => {
+                        console.log(e);
+                    });
+            }
         }
     }
 </script>
@@ -81,10 +95,19 @@
 
     .v-card {
         margin: 15px 15px 15px 15px;
-        height: 250px;
+        height: 270px;
         flex-basis: 25%;
         flex-grow: 1;
         flex-shrink: 1;
+    }
+
+    .v-card-title {
+        font-size: 17px;
+    }
+
+    .v-card-subtitle {
+        font-style: italic;
+        text-align: end;
     }
 
     .v-card-text {

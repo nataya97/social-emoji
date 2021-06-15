@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Feed from "../components/Feed";
 import Login from "../components/Login";
 import Discovery from "../components/Discovery";
+import UserPage from "../components/UserPage";
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,11 @@ const routes = [
         name: 'Discovery',
         component: Discovery
     },
+    {
+        path: '/profile',
+        name: 'UserPage',
+        component: UserPage
+    }
 ]
 
 const router = new VueRouter({

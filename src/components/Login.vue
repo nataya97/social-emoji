@@ -102,6 +102,7 @@
             received_messages: [],
             send_message: null,
             connected: false,
+            userid: null
         }),
         mounted() {
             this.connectWebSocket();

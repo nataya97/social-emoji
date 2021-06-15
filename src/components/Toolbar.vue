@@ -10,6 +10,12 @@
                 class="v-toolbar-icons">
             <v-icon
                     class="v-icon"
+                    style="margin-right: 25px;">
+                mdi-magnify
+            </v-icon>
+
+            <v-icon
+                    class="v-icon"
                     v-on:click="changeRoute()">{{this.icon}}
             </v-icon>
 

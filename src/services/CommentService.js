@@ -18,6 +18,10 @@ class CommentService {
         return postApi.get(`/comments/user/${id}`);
     }
 
+    countUserCommentsByMonth(id, month) {
+        return postApi.get(`/comments/user/statistics/user=${id}&month=${month}`);
+    }
+
     deleteComment(id) {
         return postApi.delete(`/comments=${id}`);
     }

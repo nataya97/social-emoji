@@ -3,8 +3,7 @@ import postApi from "../apis/postApi";
 class PostService {
 
     createPost(post) {
-        return postApi.post('/posts', post
-        );
+        return postApi.post('/posts', post);
     }
 
     getAllPosts() {
@@ -17,6 +16,10 @@ class PostService {
 
     countUserPosts(id) {
         return postApi.get(`/posts/user/${id}`);
+    }
+
+    countUserPostsByMonth(id, month) {
+        return postApi.get(`/posts/user/statistics?user=${id}&month=${month}`);
     }
 
     deletePost(id) {
