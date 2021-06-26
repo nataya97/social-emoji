@@ -9,6 +9,10 @@ class UserService {
     getUserById(id) {
         return api.get(`/users/id/${id}`);
     }
+
+    getFollowers() {
+        return api.get(`/users/`);
+    }
 }
 
 export default new UserService();

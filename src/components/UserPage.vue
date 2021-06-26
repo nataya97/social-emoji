@@ -70,7 +70,7 @@
         methods: {
             getPostsPerMonth() {
                 for (let month = 1; month <= this.labels.length; month++) {
-                    PostService.countUserPostsByMonth(3, month)
+                    PostService.countUserPostsByMonth(59, month)
                         .then(response => {
                             this.postPerMonthData.push(response.data)
                             console.log(this.postPerMonthData)

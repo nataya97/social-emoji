@@ -11,7 +11,7 @@ class PostService {
     }
 
     getUserPosts(id) {
-        return postApi.get(`/posts/user=${id}`);
+        return postApi.get(`/posts/userId?user=${id}`);
     }
 
     countUserPosts(id) {

@@ -127,6 +127,7 @@
 
     .v-icon.v-icon {
         margin-right: 25px;
+        margin-left: 25px;
         color: #BCA5AF;
     }
 

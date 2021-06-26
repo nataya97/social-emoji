@@ -41,7 +41,8 @@
                         </v-btn>
                         <v-btn
                                 @click="submitPost()"
-                                text>
+                                text
+                        >
                             Submit
                         </v-btn>
                     </v-card-actions>
@@ -56,27 +57,29 @@
 
     export default {
         name: "Dialog",
-
+        components: {},
         data: () => ({
-            posts: [],
+            //posts: [],
             postInput: '',
             postBody: '',
         }),
         methods: {
             submitPost() {
-                console.log(this.postInput)
-                this.posts.push(this.postInput);
-                this.$root.posts = this.posts;
+                //this.posts.push(this.postInput);
+                //this.$root.posts = this.posts;
                 this.postBody = JSON.stringify({content: this.postInput});
-                console.log(this.postBody)
                 PostService.createPost(this.postBody)
-                    .then(respponse => {
-                        console.log(respponse)
-                    })
-                    .catch(e => {
-                        console.log(e)
-                    });
+                    .then(response => {
+                        console.log(response)
+                        //this.showSnackBar();
+                        this.window.location.reload();
+                    }).catch(e => {
+                    console.log(e.response.data.message)
+                });
             },
+            showSnackBar() {
+                this.$refs.snackbar.showSnackBar();
+            }
         }
     }
 </script>

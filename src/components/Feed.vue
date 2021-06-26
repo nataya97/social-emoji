@@ -2,78 +2,36 @@
     <v-container class="body">
         <Toolbar></Toolbar>
 
-        <!-- FRIENDS FRIENDS FRIENDS -->
-        <div>
-            <v-card
-                    class="v-friends-card">
-                <v-avatar
-                        :key="user.firstname"
-                        class="v-avatar"
-                        size="25"
-                        v-for="user in userList">
-                    <v-icon
-                            dark>
-                        mdi-account-circle
-                    </v-icon>
-                </v-avatar>
-            </v-card>
-        </div>
-
         <v-card
                 class="v-card"
                 elevation="10"
                 :key="post.value"
-                v-for="post in this.$root.posts">
+                v-for="post in postList">
             <v-card-title
                     class="v-card-title">
                 Username
             </v-card-title>
             <v-card-subtitle
                     class="v-card-subtitle">
-                Date | #Post
+                {{post.submitted}}
             </v-card-subtitle>
             <v-card-text
                     class="v-card-text">
-                {{post}}
+                {{post.content}}
             </v-card-text>
-            <v-divider
-                    class="v-divider"></v-divider>
-            <v-card class="v-card-reactions"
-                    elevation="0"
-                    v-if="reactions.length > 0 && reactions.length <= 10"
-            >
-                {{reactions}}
-            </v-card>
-            <v-card class="v-card-reactions"
-                    elevation="0"
-                    v-else-if="reactions.length > 0 && reactions.length > 10">
-                {{omitEmoji()}}
-            </v-card>
-            <v-divider
-                    class="v-divider">
-            </v-divider>
             <v-card-actions
                     class="v-card-actions">
-                <v-spacer></v-spacer>
-                <v-text-field
-                        append-icon="mdi-send" class="v-text-field"
-                        counter
-                        maxlength="200"
-                        v-if="showCommentLine"></v-text-field>
-                <VEmojiPicker :pack="emojisNative"
-                              @select="selectEmoji"
-                              class="emojipicker"
-                              labelSearch="Search"
-                              v-show="emojiDialog"/>
-                <v-icon @click="showEmojiDialog"
-                        type="button">mdi-emoticon-happy-outline
-                </v-icon>
-                <span class="span"></span>
-                <div
-                        class="comment-invoker">
-                    <v-icon @click="initComment"
-                            type="button">mdi-comment-text-multiple-outline
-                    </v-icon>
+                <div class="icons">
+                    <v-spacer></v-spacer>
+                    <Emoji
+                            :postId="post.id"
+                            :userId="post.user"
+                            class="v-icon"></Emoji>
+                    <CommentDialog
+                            :postId="post.id"
+                            :userId="post.user"
+                            class="v-icon"
+                    ></CommentDialog>
                 </div>
             </v-card-actions>
         </v-card>
@@ -81,61 +39,42 @@
 </template>
 
 <script>
-    import {VEmojiPicker} from 'v-emoji-picker';
-    import packEmoji from 'vue-emoji-picker/src/emojis';
-    import UserService from "../services/UserService";
     import Toolbar from "./Toolbar";
+    import PostService from "../services/PostService";
+    import Emoji from "./Emoji";
+    import CommentDialog from "./CommentDialog";
 
     export default {
         name: "Feed",
         components: {
             Toolbar,
-            VEmojiPicker
+            Emoji,
+            CommentDialog
         },
 
         data: () => ({
-            emojiDialog: false,
-            reactions: [],
-            omitReactions: [],
             comment: '',
-            showCommentLine: false,
             userList: [],
+            postList: []
         }),
 
         mounted() {
-            this.getAllUsers();
+            this.getAllPosts();
+
         },
         methods: {
-            showEmojiDialog() {
-                this.emojiDialog = !this.emojiDialog;
-            },
-            selectEmoji(emoji) {
-                this.reactions.push(emoji.data);
-            },
-            omitEmoji() {
-                this.omitReactions = this.reactions.slice(0, 10);
-            },
-            initComment() {
-                this.showCommentLine = !this.showCommentLine;
-
-            },
-            getAllUsers() {
-                UserService.getAllUsers()
+            getAllPosts() {
+                PostService.getUserPosts(59)
                     .then(response => {
-                        for (let user of response.data) {
-                            this.userList.push(user)
+                        for (let post of response.data) {
+                            this.postList.push(post);
                         }
                     })
                     .catch(e => {
                         console.log(e)
                     });
-            }
+            },
         },
-        computed: {
-            emojisNative() {
-                return packEmoji;
-            }
-        }
     };
 </script>
 
@@ -146,40 +85,18 @@
     }
 
     .v-card {
-        margin-bottom: 25px;
+        margin: 15px 15px 25px 15px;
+        flex-basis: 25%;
+        flex-grow: 1;
+        flex-shrink: 1;
     }
 
     .v-card-text {
         text-align: left;
     }
 
-    .v-divider {
-        width: 80%;
-        margin-right: auto;
-        margin-left: auto;
-    }
-
-    .v-card-reactions {
-        max-width: 80%;
-        overflow: hidden;
-    }
-
-    .span {
-        width: 35px;
-    }
-
     .v-card-actions {
         padding-right: 50px;
-    }
-
-    .emojipicker {
-        height: 90px;
-        width: 600px !important;
-        margin-right: 25px;
-    }
-
-    .v-text-field {
-        margin-right: 40px;
     }
 
     .v-icon {
@@ -199,5 +116,13 @@
     .v-avatar {
         margin-right: 5px;
         background-color: lightsteelblue;
+    }
+
+    .icons {
+        flex-basis: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        background: linear-gradient(280deg, rgba(78, 73, 75, 1) 20%, rgba(209, 209, 209, 0.3930614482120973) 100%);
     }
 </style>

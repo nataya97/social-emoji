@@ -9,10 +9,13 @@
         <div
                 class="v-toolbar-icons">
             <v-icon
-                    class="v-icon"
-                    style="margin-right: 25px;">
+                    class="v-icon">
                 mdi-magnify
             </v-icon>
+
+            <FriendsDialog
+                    class="v-icon">
+            </FriendsDialog>
 
             <v-icon
                     class="v-icon"
@@ -35,10 +38,11 @@
 <script>
     import router from '../router'
     import Dialog from "./Dialog";
+    import FriendsDialog from "./FriendsDialog";
 
     export default {
         name: "Toolbar",
-        components: {Dialog},
+        components: {FriendsDialog, Dialog},
         data: () => ({
             toolbarTitle: '',
             icon: ''
