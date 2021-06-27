@@ -1,11 +1,5 @@
 <template>
     <div>
-        <v-btn
-                @click="snackbar = true"
-                dark
-                flat
-        >
-        </v-btn>
         <v-snackbar
                 timeout="2000"
                 v-model="snackbar"
@@ -22,14 +16,15 @@
 
         data: () => ({
             snackbar: false,
-            successMessage: 'Your post has been submitted!'
+            successMessage: ''
         }),
 
         methods: {
-            showSnackBar() {
+            showSnackBar(data) {
+                this.successMessage = data
                 this.snackbar = true;
             }
-        }
+        },
     }
 </script>
 

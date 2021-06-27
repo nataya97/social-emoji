@@ -77,7 +77,7 @@
                     console.log(e.response.data.message)
                 });
             },
-            showSnackBar() {
+            popUpSnackBar() {
                 this.$refs.snackbar.showSnackBar();
             }
         }

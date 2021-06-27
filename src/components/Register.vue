@@ -1,8 +1,10 @@
 <template>
-    <v-container>
+    <v-container
+            class="v-container">
         <v-card
-                class="login"
-                elevation="10">
+                class="v-card"
+                elevation="10"
+        >
             <v-card-title
                     class="v-card-title">
                 Welcome to Emojimedia
@@ -18,9 +20,9 @@
                     >
                         <v-text-field
                                 class="v-text-field"
-                                v-model="username"
                                 label="Username"
                                 required
+                                v-model="username"
                         >
                         </v-text-field>
                     </v-col>
@@ -30,9 +32,33 @@
                     >
                         <v-text-field
                                 class="v-text-field"
-                                v-model="password"
+                                label="Firstname"
+                                required
+                                v-model="firstname"
+                        >
+                        </v-text-field>
+                    </v-col>
+                    <v-col
+                            cols="12"
+                            md="12"
+                    >
+                        <v-text-field
+                                class="v-text-field"
+                                label="Lastname"
+                                required
+                                v-model="lastname"
+                        >
+                        </v-text-field>
+                    </v-col>
+                    <v-col
+                            cols="12"
+                            md="12"
+                    >
+                        <v-text-field
+                                class="v-text-field"
                                 label="Password"
                                 required
+                                v-model="password"
                         >
                         </v-text-field>
                     </v-col>
@@ -43,11 +69,13 @@
                 <v-btn
                         class="v-btn"
                         elevation="0"
-                        v-on:click="login"
-                >Login
+                        v-on:click="register"
+                >
+                    Register
                 </v-btn>
             </v-card-actions>
         </v-card>
+
     </v-container>
 </template>
 
@@ -57,7 +85,7 @@
     import router from "../router";
 
     export default {
-        name: 'Login',
+        name: "Register",
 
         data: () => ({
             valid: false,
@@ -80,7 +108,7 @@
                     frame => {
                         this.connected = true;
                         console.log("The Frame: ", frame);
-                        this.stompClient.subscribe("/topic/login", tick => {
+                        this.stompClient.subscribe("/topic/register", tick => {
                             this.received_messages.push(JSON.parse(tick.body).content);
                             console.log("The tick: ", tick.body)
                             this.isAuthorized(tick.body)
@@ -94,39 +122,41 @@
                 )
             },
             sendMessage(msg) {
+                console.log("Send message:...");
                 if (this.stompClient && this.stompClient.connected) {
                     console.log("Sending message", JSON.stringify(msg));
-                    this.stompClient.send("/app/login", msg, {});
+                    this.stompClient.send("/app/register", msg, {});
                 }
             },
-            login() {
+            register() {
                 const msg = {
+                    firstName: this.firstname,
+                    lastName: this.lastname,
                     userName: this.username,
                     pwd: this.password
                 };
-                this.sendMessage(JSON.stringify(msg)
-                );
-            },
-            displayEmoji(unicode) {
-                const emoji = require("emoji-dictionary");
-                return emoji.getUnicode(unicode)
-            },
-            isAuthorized(tick) {
-                if (tick === true) {
-                    router.push({name: 'Discovery'});
-                    localStorage.setItem('username', this.username);
-                } else {
-                    //TODO: snackbar
-                    this.$root.SnackBar.showSnackBar('Login was not successful!');
-                }
+                this.sendMessage(JSON.stringify(msg));
+            }
+        },
+        displayEmoji(unicode) {
+            const emoji = require("emoji-dictionary");
+            return emoji.getUnicode(unicode)
+        },
+        isAuthorized(tick) {
+            if (tick) {
+                router.push({name: 'Discovery'});
+                localStorage.setItem('username', this.username);
+            } else {
+                //TODO: snackbar
+                this.$refs.snackbar.showSnackBar();
             }
         }
     }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 
-    .login {
+    .v-card {
         width: max-content;
         margin: auto;
     }
@@ -140,4 +170,5 @@
         position: relative;
         background: linear-gradient(280deg, rgba(78, 73, 75, 1) 20%, rgba(209, 209, 209, 0.3930614482120973) 100%);
     }
+
 </style>
