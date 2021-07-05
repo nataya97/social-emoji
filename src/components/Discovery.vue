@@ -27,6 +27,7 @@
                         <Emoji
                                 :postId="post.id"
                                 :userId="post.user"
+                                :reaction="post.reaction"
                                 class="v-icon"></Emoji>
                         <CommentDialog
                                 :postId="post.id"
@@ -62,7 +63,6 @@
 
         methods: {
             getAllPosts() {
-                console.log("the current user", localStorage.getItem('userId'))
                 PostService.getAllPosts()
                     .then((response) => {
                         console.log(response)
@@ -79,8 +79,6 @@
             getUserPerPost(post, id) {
                 UserService.getUserById(id)
                     .then((response) => {
-                        console.log("getUserPerPost", response.data)
-                        //post.username = response.data.userName;
                         this.getEmojisPerPost(post, post.id, response.data.userName)
                     })
                     .catch(e => {
@@ -90,7 +88,7 @@
             getEmojisPerPost(post, postId, username) {
                 ReactionService.getReaction(postId)
                     .then(response => {
-                        console.log("emooji", response)
+                        console.log("emoji", response)
                         if (response.data.reactions !== undefined) {
                             post.reaction = response.data.reactions.reactions;
                         }

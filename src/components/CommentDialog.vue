@@ -108,12 +108,11 @@
                 CommentService.createComment(this.postId, this.commentBody)
                     .then(response => {
                         console.log(response)
-                        //TODO: snackbar
-                        //this.$refs.snackbar.showSnackBar(response.data);
                     })
                     .catch(e => {
                         console.log(e)
                     });
+                this.$router.go()
             },
             readComments() {
                 console.log("readComments", this.postId)

@@ -13,6 +13,14 @@
                         <v-icon
                                 class="v-icon"
                                 v-bind="attrs"
+                                v-if="reaction"
+                                v-on="on">
+                            {{reaction}}
+                        </v-icon>
+                        <v-icon
+                                class="v-icon"
+                                v-bind="attrs"
+                                v-else
                                 v-on="on">
                             {{emojiIcon}}
                         </v-icon>
@@ -50,13 +58,13 @@
             reactionBody: '',
             reactionMap: '',
             postBody: '',
-            reactionPostId: '',
             emojiIcon: 'mdi-emoticon-happy-outline',
         }),
 
         props: {
             postId: String,
             userId: Number,
+            reaction: String
         },
 
         methods: {
@@ -92,14 +100,11 @@
                 });
                 PostService.createPost(this.postBody)
                     .then(response => {
-                        console.log("creating post", response.data)
-                        this.$root.reactionPostId = response.data.id;
-                        console.log("getting postId", this.$root.reactionPostId)
+                        localStorage.setItem('postId', response.data.id)
                     }).catch(e => {
                     console.log(e.response)
                 });
-
-                ReactionService.addReaction(this.$root.reactionPostId, this.reactionBody)
+                ReactionService.addReaction(localStorage.getItem('postId'), this.reactionBody)
                     .then(response => {
                         console.log(response)
                     })

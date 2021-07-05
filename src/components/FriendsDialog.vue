@@ -203,6 +203,7 @@
                     .catch(e => {
                         console.log(e)
                     })
+                this.$router.go()
             },
             unfollow(username) {
                 console.log(username)
@@ -215,6 +216,7 @@
                         console.log(e)
                     }
                 )
+                this.$router.go()
             },
             getUserByUsername(username) {
                 console.log("getting username", username)

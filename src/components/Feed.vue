@@ -66,7 +66,6 @@
         },
         methods: {
             getAllPosts() {
-                console.log("current user", localStorage.getItem('userId'))
                 PostService.getUserPosts(localStorage.getItem('userId'))
                     .then(response => {
                         for (let post of response.data) {
@@ -96,7 +95,6 @@
             getUserPerPost(post, id) {
                 UserService.getUserById(id)
                     .then((response) => {
-                        console.log("getUserPerPost", response.data)
                         post.username = response.data.userName;
                         this.postList.push(post);
                         return (response.data);
@@ -108,7 +106,7 @@
             getEmojisPerPost(postId) {
                 ReactionService.getReaction(postId)
                     .then(response => {
-                        console.log(response.data)
+                        console.log("response ", response)
                     })
                     .catch(e => {
                         console.log(e)

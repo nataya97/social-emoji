@@ -77,15 +77,16 @@
             submitPost() {
                 this.postBody = JSON.stringify({
                     content: this.postInput,
+                    id: localStorage.getItem('postId'),
                     user: localStorage.getItem('userId')
                 });
                 PostService.updatePost(this.postBody)
                     .then(response => {
                         console.log(response)
-                        this.window.location.reload();
                     }).catch(e => {
                     console.log(e.response)
                 });
+                this.$router.go()
             },
         }
     }
