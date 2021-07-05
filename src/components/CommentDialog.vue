@@ -35,7 +35,18 @@
                                     class="v-card-comment-listing"
                                     elevation="5"
                                     v-for="comment in commentList">
-                                {{comment.content}}
+                                <v-card-title
+                                        class="v-card-title">
+                                    {{comment.username}}
+                                </v-card-title>
+                                <v-card-subtitle
+                                        class="v-card-subtitle">
+                                    {{comment.submitted}}
+                                </v-card-subtitle>
+                                <v-card-text
+                                        class="v-card-content">
+                                    {{comment.content}}
+                                </v-card-text>
                             </v-card>
                         </div>
                         <div
@@ -72,6 +83,7 @@
 
 <script>
     import CommentService from "../services/CommentService";
+    import UserService from "../services/UserService";
 
     export default {
         name: "CommentDialog",
@@ -90,12 +102,14 @@
         methods: {
             submitComment() {
                 this.commentBody = JSON.stringify({
-                    user: this.userId,
+                    user: localStorage.getItem('userId'),
                     content: this.commentInput
                 });
                 CommentService.createComment(this.postId, this.commentBody)
                     .then(response => {
                         console.log(response)
+                        //TODO: snackbar
+                        //this.$refs.snackbar.showSnackBar(response.data);
                     })
                     .catch(e => {
                         console.log(e)
@@ -106,14 +120,26 @@
                 CommentService.getCommentsByPost(this.postId)
                     .then(response => {
                         console.log(response.data)
+                        this.commentList.length = 0;
                         for (let comment of response.data) {
-                            this.commentList.push(comment);
+                            this.getUserPerComment(comment, comment.user)
                         }
                     })
                     .catch(e => {
                         console.log(e)
                     })
             },
+            getUserPerComment(comment, id) {
+                UserService.getUserById(id)
+                    .then(response => {
+                        console.log("getCommentPerPost", response.data)
+                        comment.username = response.data.userName;
+                        this.commentList.push(comment);
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+            }
         }
     }
 </script>
@@ -146,6 +172,11 @@
         letter-spacing: 3px;
         margin-bottom: 35px;
         background-color: rgb(78, 73, 75) !important;
+    }
+
+    .v-card-subtitle {
+        font-style: italic;
+        text-align: justify;
     }
 
     .v-icon.v-icon {

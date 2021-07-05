@@ -27,11 +27,11 @@
                     class="v-icon"></Dialog>
             <v-icon
                     append-icon=mdi-checkbox-multiple-blank-circle
-                    class="v-icon">
-                mdi-bell-outline
+                    class="v-icon"
+                    v-on:click="logout()">
+                mdi-logout
             </v-icon>
         </div>
-
     </v-toolbar>
 </template>
 
@@ -57,7 +57,7 @@
                     this.toolbarTitle = 'Discovery Page';
                     this.icon = 'mdi-home-circle-outline';
                 } else {
-                    this.toolbarTitle = 'Username Feed';
+                    this.toolbarTitle = localStorage.getItem('username') + "s Feed";
                     this.icon = 'mdi-compass-outline';
                 }
             },
@@ -67,6 +67,9 @@
                 } else {
                     router.push({name: 'Discovery'});
                 }
+            },
+            logout() {
+                router.push({name: 'Logout'});
             }
         }
     }

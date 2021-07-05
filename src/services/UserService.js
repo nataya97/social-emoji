@@ -10,8 +10,28 @@ class UserService {
         return api.get(`/users/id/${id}`);
     }
 
-    getFollowers() {
-        return api.get(`/users/`);
+    getUserByUsername(username) {
+        return api.get(`/users/username/${username}`);
+    }
+
+    getFollowers(id) {
+        return api.get(`/users/${id}/followedBy`);
+    }
+
+    getFollowing(id) {
+        return api.get(`/users/${id}/follows`);
+    }
+
+    createUser(user) {
+        return api.post(`/users/addUser`, user);
+    }
+
+    follow(following, follower) {
+        return api.put(`/users/${following}/setFollows/${follower}`);
+    }
+
+    unfollow(following, follower) {
+        return api.delete(`/users/${follower}/unFollows/${following}`);
     }
 }
 

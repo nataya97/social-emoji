@@ -4,6 +4,8 @@ import Feed from "../components/Feed";
 import Login from "../components/Login";
 import Discovery from "../components/Discovery";
 import UserPage from "../components/UserPage";
+import Register from "../components/Register";
+import Logout from "../components/Logout";
 
 Vue.use(VueRouter)
 
@@ -21,7 +23,12 @@ const routes = [
     {
         path: '/register',
         name: 'Register',
-        component: Login
+        component: Register
+    },
+    {
+        path: '/logout',
+        name: 'Logout',
+        component: Logout
     },
     {
         path: '/discovery',

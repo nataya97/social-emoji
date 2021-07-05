@@ -40,6 +40,7 @@
 
 <script>
     import ReactionService from "../services/ReactionService";
+    import PostService from "../services/PostService";
 
     export default {
         name: "Emoji",
@@ -48,6 +49,8 @@
             emojis: [],
             reactionBody: '',
             reactionMap: '',
+            postBody: '',
+            reactionPostId: '',
             emojiIcon: 'mdi-emoticon-happy-outline',
         }),
 
@@ -74,14 +77,29 @@
             },
             react($event) {
                 this.reactionMap = {
-                    user: this.userId,
+                    user: localStorage.getItem('userId'),
                     reactions: $event.target.textContent
                 }
                 this.reactionBody = JSON.stringify({
                     reactions: this.reactionMap
                 });
                 console.log(this.reactionBody)
-                ReactionService.addReaction(this.postId, this.reactionBody)
+
+                //create temp post
+                this.postBody = JSON.stringify({
+                    content: '',
+                    user: localStorage.getItem('userId')
+                });
+                PostService.createPost(this.postBody)
+                    .then(response => {
+                        console.log("creating post", response.data)
+                        this.$root.reactionPostId = response.data.id;
+                        console.log("getting postId", this.$root.reactionPostId)
+                    }).catch(e => {
+                    console.log(e.response)
+                });
+
+                ReactionService.addReaction(this.$root.reactionPostId, this.reactionBody)
                     .then(response => {
                         console.log(response)
                     })
@@ -93,7 +111,7 @@
             },
             updateEmojiIcon(emoji) {
                 this.emojiIcon = emoji;
-            },
+            }
         },
 
         mounted() {

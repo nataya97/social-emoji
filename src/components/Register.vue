@@ -56,9 +56,13 @@
                     >
                         <v-text-field
                                 class="v-text-field"
+                                @click:append="changePasswordState"
                                 label="Password"
                                 required
                                 v-model="password"
+                                append-icon="mdi-eye"
+                                id="passwordField"
+                                type="password"
                         >
                         </v-text-field>
                     </v-col>
@@ -83,6 +87,7 @@
     import SockJS from "sockjs-client";
     import Stopm from "webstomp-client";
     import router from "../router";
+    import UserService from "../services/UserService";
 
     export default {
         name: "Register",
@@ -95,7 +100,8 @@
             lastname: '',
             received_messages: [],
             connected: false,
-            userid: null
+            userid: null,
+            register_unsuccessful_message: 'Registering was not successful, try again!'
         }),
         mounted() {
             this.connectWebSocket();
@@ -136,21 +142,42 @@
                     pwd: this.password
                 };
                 this.sendMessage(JSON.stringify(msg));
+            },
+            displayEmoji(unicode) {
+                const emoji = require("emoji-dictionary");
+                return emoji.getUnicode(unicode)
+            },
+            isAuthorized(tick) {
+                if (tick) {
+                    localStorage.setItem('username', this.username);
+                    this.getUserId();
+                    this.timeOut();
+                    router.push({name: 'Discovery'});
+                } else {
+                    this.$refs.snackbar.showSnackBar(this.register_unsuccessful_message);
+                }
+            },
+            getUserId() {
+                UserService.getUserByUsername(this.username)
+                    .then(response => {
+                        console.log(response.data.id)
+                        localStorage.setItem('userId', response.data.id)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+            },
+            changePasswordState() {
+                const passwordField = document.querySelector('#passwordField')
+
+                if (passwordField.getAttribute('type') === 'password')
+                    passwordField.setAttribute('type', 'text')
+                else passwordField.setAttribute('type', 'password')
+            },
+            timeOut() {
+                setTimeout(() => this.goToLogin(), 4000);
             }
         },
-        displayEmoji(unicode) {
-            const emoji = require("emoji-dictionary");
-            return emoji.getUnicode(unicode)
-        },
-        isAuthorized(tick) {
-            if (tick) {
-                router.push({name: 'Discovery'});
-                localStorage.setItem('username', this.username);
-            } else {
-                //TODO: snackbar
-                this.$refs.snackbar.showSnackBar();
-            }
-        }
     }
 </script>
 
@@ -170,5 +197,4 @@
         position: relative;
         background: linear-gradient(280deg, rgba(78, 73, 75, 1) 20%, rgba(209, 209, 209, 0.3930614482120973) 100%);
     }
-
 </style>

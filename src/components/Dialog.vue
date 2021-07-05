@@ -20,7 +20,13 @@
                     >
                         <v-toolbar-title
                                 class="v-toolbar-title">
-                            Share your mood!
+                            <div>
+                                Share your mood!
+                            </div>
+                            <div>
+                                <Emoji
+                                        class="emoji"></Emoji>
+                            </div>
                         </v-toolbar-title>
                     </v-toolbar>
                     <v-textarea
@@ -54,32 +60,33 @@
 
 <script>
     import PostService from "../services/PostService";
+    import Emoji from "./Emoji";
 
     export default {
         name: "Dialog",
-        components: {},
+        components: {Emoji},
         data: () => ({
-            //posts: [],
             postInput: '',
             postBody: '',
         }),
+        props: {
+            postId: String,
+            userId: Number,
+        },
         methods: {
             submitPost() {
-                //this.posts.push(this.postInput);
-                //this.$root.posts = this.posts;
-                this.postBody = JSON.stringify({content: this.postInput});
-                PostService.createPost(this.postBody)
+                this.postBody = JSON.stringify({
+                    content: this.postInput,
+                    user: localStorage.getItem('userId')
+                });
+                PostService.updatePost(this.postBody)
                     .then(response => {
                         console.log(response)
-                        //this.showSnackBar();
                         this.window.location.reload();
                     }).catch(e => {
-                    console.log(e.response.data.message)
+                    console.log(e.response)
                 });
             },
-            popUpSnackBar() {
-                this.$refs.snackbar.showSnackBar();
-            }
         }
     }
 </script>
@@ -99,8 +106,8 @@
     }
 
     .v-icon.v-icon {
-        margin-right: 15px;
-        margin-left: 15px;
+        margin-right: 5px;
+        margin-left: 5px;
         color: #BCA5AF;
     }
 

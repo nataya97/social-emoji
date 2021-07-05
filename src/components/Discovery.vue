@@ -46,6 +46,7 @@
     import CommentDialog from "./CommentDialog";
     import Emoji from "./Emoji";
     import UserService from "../services/UserService";
+    import ReactionService from "../services/ReactionService";
 
     export default {
         name: "Discovery",
@@ -61,10 +62,14 @@
 
         methods: {
             getAllPosts() {
+                console.log("the current user", localStorage.getItem('userId'))
                 PostService.getAllPosts()
                     .then((response) => {
+                        console.log(response)
                         for (let post of response.data) {
-                            this.getUserPerPost(post, post.user);
+                            if (post.content.length > 0) {
+                                this.getUserPerPost(post, post.user);
+                            }
                         }
                     })
                     .catch(e => {
@@ -74,13 +79,27 @@
             getUserPerPost(post, id) {
                 UserService.getUserById(id)
                     .then((response) => {
-                        post.username = response.data;
-                        this.postList.push(post);
-                        return (response.data);
+                        console.log("getUserPerPost", response.data)
+                        //post.username = response.data.userName;
+                        this.getEmojisPerPost(post, post.id, response.data.userName)
                     })
                     .catch(e => {
                         console.log(e);
                     });
+            },
+            getEmojisPerPost(post, postId, username) {
+                ReactionService.getReaction(postId)
+                    .then(response => {
+                        console.log("emooji", response)
+                        if (response.data.reactions !== undefined) {
+                            post.reaction = response.data.reactions.reactions;
+                        }
+                        post.username = username;
+                        this.postList.push(post);
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
             }
         }
     }
@@ -112,7 +131,6 @@
 
     .v-card-text {
         height: 120px;
-        /*overflow: auto;*/
         text-align: justify;
     }
 
@@ -126,11 +144,9 @@
     }
 
     .v-icon.v-icon {
-        margin-right: 25px;
-        margin-left: 25px;
+        margin-right: 5px;
+        margin-left: 5px;
         color: #BCA5AF;
     }
 
-    .v-card-actions {
-    }
 </style>

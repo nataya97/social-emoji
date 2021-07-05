@@ -6,6 +6,10 @@ class PostService {
         return postApi.post('/posts', post);
     }
 
+    updatePost(post) {
+        return postApi.put('/posts/update', post);
+    }
+
     getAllPosts() {
         return postApi.get('/posts');
     }

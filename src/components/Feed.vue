@@ -1,7 +1,6 @@
 <template>
     <v-container class="body">
         <Toolbar></Toolbar>
-
         <v-card
                 class="v-card"
                 elevation="10"
@@ -9,7 +8,7 @@
                 v-for="post in postList">
             <v-card-title
                     class="v-card-title">
-                Username
+                {{post.username}}
             </v-card-title>
             <v-card-subtitle
                     class="v-card-subtitle">
@@ -43,6 +42,8 @@
     import PostService from "../services/PostService";
     import Emoji from "./Emoji";
     import CommentDialog from "./CommentDialog";
+    import UserService from "../services/UserService";
+    import ReactionService from "../services/ReactionService";
 
     export default {
         name: "Feed",
@@ -54,26 +55,65 @@
 
         data: () => ({
             comment: '',
-            userList: [],
-            postList: []
+            followsList: [],
+            postList: [],
         }),
 
         mounted() {
             this.getAllPosts();
+            this.getPostsOfFollowing();
 
         },
         methods: {
             getAllPosts() {
-                PostService.getUserPosts(59)
+                console.log("current user", localStorage.getItem('userId'))
+                PostService.getUserPosts(localStorage.getItem('userId'))
                     .then(response => {
                         for (let post of response.data) {
-                            this.postList.push(post);
+                            if (post.content.length > 0) {
+                                this.getUserPerPost(post, post.user);
+                                this.getEmojisPerPost(post.id);
+                            }
                         }
                     })
                     .catch(e => {
                         console.log(e)
                     });
             },
+            getPostsOfFollowing() {
+                UserService.getFollowers(localStorage.getItem('userId'))
+                    .then(response => {
+                        console.log(response.data)
+                        for (let resp of response.data) {
+                            this.followsList.push(resp.id)
+                        }
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    });
+
+            },
+            getUserPerPost(post, id) {
+                UserService.getUserById(id)
+                    .then((response) => {
+                        console.log("getUserPerPost", response.data)
+                        post.username = response.data.userName;
+                        this.postList.push(post);
+                        return (response.data);
+                    })
+                    .catch(e => {
+                        console.log(e);
+                    });
+            },
+            getEmojisPerPost(postId) {
+                ReactionService.getReaction(postId)
+                    .then(response => {
+                        console.log(response.data)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+            }
         },
     };
 </script>
@@ -81,7 +121,8 @@
 <style lang="scss" scoped>
 
     .v-card-subtitle {
-        text-align: left;
+        font-style: italic;
+        text-align: justify;
     }
 
     .v-card {

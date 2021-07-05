@@ -30,9 +30,13 @@
                     >
                         <v-text-field
                                 class="v-text-field"
+                                @click:append="changePasswordState"
                                 v-model="password"
                                 label="Password"
                                 required
+                                append-icon="mdi-eye"
+                                id="passwordField"
+                                type="password"
                         >
                         </v-text-field>
                     </v-col>
@@ -46,6 +50,12 @@
                         v-on:click="login"
                 >Login
                 </v-btn>
+                <v-btn
+                        class="v-btn"
+                        elevation="0"
+                        v-on:click="goToRegister()"
+                >Register
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-container>
@@ -55,6 +65,7 @@
     import SockJS from "sockjs-client";
     import Stopm from "webstomp-client";
     import router from "../router";
+    import UserService from "../services/UserService";
 
     export default {
         name: 'Login',
@@ -63,11 +74,10 @@
             valid: false,
             username: '',
             password: '',
-            firstname: '',
-            lastname: '',
             received_messages: [],
             connected: false,
-            userid: null
+            userId: 59,
+            login_unsuccessful_message: 'Login was not successful, try again!'
         }),
         mounted() {
             this.connectWebSocket();
@@ -112,13 +122,33 @@
                 return emoji.getUnicode(unicode)
             },
             isAuthorized(tick) {
-                if (tick === true) {
-                    router.push({name: 'Discovery'});
+                if (tick) {
+                    localStorage.clear();
                     localStorage.setItem('username', this.username);
+                    this.getUserId();
+                    router.push({name: 'Discovery'});
                 } else {
-                    //TODO: snackbar
-                    this.$root.SnackBar.showSnackBar('Login was not successful!');
+                    this.$root.SnackBar.showSnackBar(this.login_unsuccessful_message);
                 }
+            },
+            getUserId() {
+                UserService.getUserByUsername(this.username)
+                    .then(response => {
+                        localStorage.setItem('userId', response.data.id)
+                    })
+                    .catch(e => {
+                        console.log(e)
+                    })
+            },
+            goToRegister() {
+                router.push({name: 'Register'})
+            },
+            changePasswordState() {
+                const passwordField = document.querySelector('#passwordField')
+
+                if (passwordField.getAttribute('type') === 'password')
+                    passwordField.setAttribute('type', 'text')
+                else passwordField.setAttribute('type', 'password')
             }
         }
     }
